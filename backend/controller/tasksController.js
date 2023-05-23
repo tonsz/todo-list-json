@@ -3,23 +3,41 @@ import { readFile as _readFile, writeFile as _writeFile } from "fs";
 
 const readFile = promisify(_readFile)
 const writeFile = promisify(_writeFile)
+const tasksFilePath = "./backend/tasks.json"
 
 async function readTasks () {
-    const data = await readFile("./backend/tasks.json", "utf-8")
+    const data = await readFile(tasksFilePath, "utf-8")
     return JSON.parse(data)
 }
 
 async function writeTask (newTask) {
     const tasksBufferObj = await readTasks()
     let tasks =  tasksBufferObj.tasks
-    let lastTaskID = tasks[tasks.length - 1].id
+    let lastTaskID = 0
+
+    if(tasks.length > 0) {
+        lastTaskID = tasks[tasks.length - 1].id
+    }
     
     tasks.push({
         "id": lastTaskID + 1,
         "name": newTask                         
     })
     
-    writeFile("./backend/tasks.json", JSON.stringify({ tasks }))
+    writeFile(tasksFilePath, JSON.stringify({ tasks }))
+}
+
+async function extractTask (taskIDToDelete) {
+    const taskFile = await readTasks() 
+    const tasks = taskFile.tasks
+
+    const taskToDeleteIndex = tasks.findIndex(task => task.id == taskIDToDelete)
+
+    if (taskToDeleteIndex !== -1) {
+        tasks.splice(taskToDeleteIndex, 1)
+    }
+
+    writeFile(tasksFilePath, JSON.stringify({ tasks }))
 }
 
 
@@ -49,9 +67,8 @@ async function addTasks (req, res) {
 async function deleteTask (req, res) {
     try {
         const taskID = req.params.id
-        console.log("deleting " + taskID)
+        await extractTask(taskID)
         res.send({message: "received"})
-        // call a function that will delete the task 
     } catch (error) {
         console.error(error)
         res.send({error})

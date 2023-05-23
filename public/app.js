@@ -37,23 +37,17 @@ async function init () {
             <button id="${tasks[i].id}">${tasks[i].name}</button>
             `
         }
-        
+
         const taskDeleteButtons = document.querySelectorAll(".task-list button")
         taskDeleteButtons.forEach(taskDeleteButtons => taskDeleteButtons.addEventListener("click", async (e) => {
-            const taskID = e.target.id
-            await fetch(resourceUrl + taskID, {
+        const taskID = e.target.id
+        await fetch(resourceUrl + taskID, {
                 method: "DELETE"
-
-            })        
-            // send e.target.id to endpoint 
-            // use fetch api again 
-
+            })  
         }));
-
     } catch (error) {
         console.log(error)
     }
 }
 
 init()
-
