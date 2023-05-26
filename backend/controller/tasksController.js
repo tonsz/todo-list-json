@@ -21,6 +21,7 @@ async function writeTask (newTask) {
     
     tasks.push({
         "id": lastTaskID + 1,
+        "status": 0,
         "name": newTask                         
     })
     
@@ -40,6 +41,18 @@ async function extractTask (taskIDToDelete) {
     writeFile(tasksFilePath, JSON.stringify({ tasks }))
 }
 
+async function markTaskAsDone (taskID) {
+    const taskFile = await readTasks() 
+    const tasks = taskFile.tasks 
+
+    const taskToChange = tasks.findIndex(task => task.id == taskID)
+
+    if (taskToChange !== -1) {
+        tasks[taskToChange].status = 1
+    }
+
+    writeFile(tasksFilePath, JSON.stringify({ tasks }))
+}
 
 async function getTasks (req, res) {
     try {
@@ -51,7 +64,7 @@ async function getTasks (req, res) {
     }
 }
 
-async function addTasks (req, res) {
+async function addTask (req, res) {
     try {
         const task = req.body.name
         await writeTask(task)
@@ -72,12 +85,24 @@ async function deleteTask (req, res) {
     } catch (error) {
         console.error(error)
         res.send({error})
-        // make an error handler function >:()
+    }
+}
+
+async function editTaskStatus (req, res) {
+    try {
+        const taskID = req.params.id
+        await markTaskAsDone(taskID)
+        res.send({message: "received"})
+    } catch (error) {
+        res.send({error})
     }
 }
 
 export { 
     getTasks,
-    addTasks,
-    deleteTask
+    addTask,
+    deleteTask, 
+    editTaskStatus
 }
+
+    // make an error handler function >:()
