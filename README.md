@@ -8,8 +8,8 @@ for editing the JSON file where all the tasks live.
 * ~~GET~~ Done!
 * ~~POST~~ Done!
 * ~~DELETE~~ Done!
-* PUT
-* User interface
+* ~~PUT~~ Done! Can only edit task status.
+* ~~User interface [BASIC]~~
 
 ## Things to Improve
 * Adding task is not seamless (the page refrehes)
@@ -24,5 +24,8 @@ for editing the JSON file where all the tasks live.
 * Express
 * Nodemon
 * .findIndex(), .splice()
+* js classes 
+* this 
+* modules
 
-Last updated: May 23, 2023 
+Last updated: May 26, 2023 
